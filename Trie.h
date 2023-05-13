@@ -8,10 +8,11 @@ class Trie
 {
 	struct Node
 	{
-		std::string value;
+		char value;
 		bool isTerminal;
-
 		std::array<Node *, 255> child;
+
+		Node(char c, bool t) : value(c), isTerminal(t) {};
 	};
 
 	Node* root;
