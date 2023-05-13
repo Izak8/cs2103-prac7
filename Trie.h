@@ -17,14 +17,10 @@ class Trie
 	Node* root;
 
 public:
-
 	Trie();
-	~Trie();
 
 	bool search(std::string key);
 	void insert(std::string key);
 	void remove(std::string key);
-
-
 };
 #endif
