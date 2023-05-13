@@ -15,6 +15,10 @@ class Trie
 	Node* root;
 public:
 
+Trie();
+~Trie();
 
-}
+
+
+};
 #endif
