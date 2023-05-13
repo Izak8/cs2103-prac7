@@ -2,7 +2,7 @@
 #define TRIE_H
 
 #include <string>
-#include <vector>
+#include <array>
 
 class Trie
 {
@@ -11,7 +11,7 @@ class Trie
 		std::string value;
 		bool isTerminal;
 
-		std::vector<Node *> child;
+		std::array<Node *, 255> child;
 	};
 
 	Node* root;
@@ -20,6 +20,11 @@ public:
 
 	Trie();
 	~Trie();
+
+	bool search(std::string key);
+	void insert(std::string key);
+	void remove(std::string key);
+
 
 };
 #endif
