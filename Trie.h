@@ -1,24 +1,25 @@
 #ifndef TRIE_H
 #define TRIE_H
 
+#include <string>
 #include <vector>
 
-template <class T>
 class Trie
 {
 	struct Node
 	{
-		T data;
+		std::string value;
+		bool isTerminal;
+
 		std::vector<Node *> child;
-	}
+	};
 
 	Node* root;
+
 public:
 
-Trie();
-~Trie();
-
-
+	Trie();
+	~Trie();
 
 };
 #endif
