@@ -1,64 +1,114 @@
 #include "Trie.h"
+
 #include <iostream>
+
 Trie::Trie()
 {
-	//Initialize an empty Trie
-	root = new Node(0, false);
+	//Initialise an empty node
+	root = new Node();
 }
 
-bool Trie::search(std::string key)
+bool Trie::search(std::string const& key)
 {
-	// Based on pseudocode from : https://en.wikipedia.org/wiki/Trie
+	// Track the current node starting at root
+	Node* node = root;
 
-	// Tracks the current node starting from root.
-	Node* currentNode = root;
-
-	// Tracks the current character within the key
-	char currentChar = '\0';
-
-	// For each character in key
-	for(size_t i = 0; i < key.length(); i++)
+	for(auto i = key.begin(); i != key.end(); ++i)
 	{
-		currentChar = key.at(i);
-		// if current character is not a child of the current node
-		// return false
-		if(!currentNode->child.at(currentChar)) {return false;}
-		// otherwise continue through to next node
-		currentNode = currentNode->child.at(currentChar);
-	}
-
-	// 
-	return true;
-};
-
-void Trie::insert(std::string key)
-{
-	// Based on pseudocode from : https://en.wikipedia.org/wiki/Trie
-
-	// Tracks the current node starting from root.
-	Node* currentNode = root;
-
-	// Tracks the current character within the key
-	char currentChar = '\0';
-
-	// For each character in key
-	for(size_t i = 0; i < key.length(); i++)
-	{
-		currentChar = key.at(i); // currentChar = ith character of key string
-
-		// if the current character in key is not a child of the current node
-		if(!currentNode->child.at(currentChar))
+		// Using unordered map. find returns child.end if value not found
+		if(node->child.find(*i) == node->child.end())
 		{
-			// create new node with value = currentChar
-			// as a child of current node
-			currentNode->child.at(currentChar) = new Node(currentChar, false);
+			// If any given character in key does not exist in trie
+			// key does not exist, therefore return false
+			return false;
 		}
-		// continue to next node
-		currentNode = currentNode->child.at(currentChar);
-	}
-	
-	// once all characters have been inserted, set last as terminal
-	currentNode->isTerminal = true;
-};
 
-void Trie::remove(std::string key){};
+		// Otherwise search for next character
+		node = node->child[*i];
+	}
+
+	// Return true only if key is not a subprefix
+	if (node->isTerminal)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void Trie::insert(std::string const& key)
+{
+	// Track the current node starting at root
+	Node* node = root;
+
+	for(auto i = key.begin(); i != key.end(); ++i)
+	{
+		if(node->child.find(*i) == node->child.end())
+		{
+			// If any given character in key does not exist in trie
+			// key does not exist, therefore create new node
+			node->child[*i] = new Node;
+		}
+
+		// Otherwise continue to next character
+		node = node->child[*i];
+	}
+
+	// End of key marked as terminal
+	node->isTerminal = true;
+}
+
+void Trie::remove(std::string const& key)
+{
+	remove(root, key, 0);
+}
+
+Trie::Node* Trie::remove(Node* node, std::string const& key, size_t depth)
+{
+	// Based on pseudocode from lecture content
+	// and from https://en.wikipedia.org/wiki/Trie
+
+	if(node == nullptr)
+	{
+		return nullptr;
+	}
+
+	if(depth == key.length())
+	{
+		if(!node->isTerminal)
+		{
+			return node;
+		}
+
+		node->isTerminal = false;
+
+		if(node->child.empty())
+		{
+			delete node;
+			node = nullptr;
+		}
+
+		return node;
+	}
+
+	node->child[key.at(depth)] = remove(node->child[key.at(depth)], key, depth+1);
+
+	if(node->child.empty())
+	{
+		delete node;
+		node = nullptr;
+	}
+
+	return node;
+}
+
+void Trie::printTerminal(std::string const& key)
+{
+	Node* node = root;
+
+	for(auto i = key.begin(); i != key.end(); ++i)
+	{
+		std::cout << node->isTerminal;
+		node = node->child[*i];
+	}
+}

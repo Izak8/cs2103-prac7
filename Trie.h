@@ -2,26 +2,27 @@
 #define TRIE_H
 
 #include <string>
-#include <array>
+#include <unordered_map>
 
 class Trie
 {
 	struct Node
 	{
-		char value;
-		bool isTerminal;
-		std::array<Node *, 255> child;
-
-		Node(char c, bool t) : value(c), isTerminal(t) {};
+		std::unordered_map<char, Node*> child;
+		bool isTerminal = false;
 	};
 
 	Node* root;
 
+	Node* remove(Node* node, std::string const& key, size_t depth);
+
 public:
 	Trie();
 
-	bool search(std::string key);
-	void insert(std::string key);
-	void remove(std::string key);
+	bool search(std::string const& key);
+	void insert(std::string const& key);
+	void remove(std::string const& key);
+
+	void printTerminal(std::string const& key);
 };
 #endif
