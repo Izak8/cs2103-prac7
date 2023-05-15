@@ -1,12 +1,32 @@
 #include "PrefixMatcher.h"
-
+#include <iostream>
 int PrefixMatcher::selectRouter(std::string networkAddress)
 {
-	// Get words with a matching prefix.
-	std::vector<std::string> list = addressList.getWords(networkAddress);
+	// for each substring from index to i in network address
+	std::vector<std::string> list = {};
+	for(size_t i = 1; i < networkAddress.length(); i++)
+	{
+		// where getWords(substring) isn't empty
+		std::vector<std::string> routers = addressList.getWords(networkAddress.substr(0, i));
+		if(routers.empty())
+		{
+			break;
+		}
 
-	// find the pair with the first address to be matched
-	auto i = routerMap.find(list.at(0));
+		list = routers;
+	}
+
+	// find the pair with the longest address
+	size_t max = 0;
+	for(size_t i = 0; i < list.size(); i++)
+	{
+		if(list.at(i).size() > max)
+		{
+			max = i;
+		}
+	}
+
+	auto i = routerMap.find(list.at(max));
 
 	// if the key doesn't exist return -1
 	if(i == routerMap.end())
