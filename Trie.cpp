@@ -145,20 +145,16 @@ std::vector<std::string> Trie::getWords(std::string const& key)
 			return list;
 		}
 	}
-
 	// recurisve call
 	// for each child of the current node
 	for(auto i : node->child)
 	{
 		char c = i.first;
-
 		// recursively getWords of the key + child character
 		std::vector<std::string> words = getWords(key+c);
-
 		// insert new words into the main vector
 		list.insert(list.end(),words.begin(), words.end());
 	}
-
 	// return the whole list
 	return list;
 }

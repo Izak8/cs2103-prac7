@@ -2,40 +2,42 @@
 #include <iostream>
 int PrefixMatcher::selectRouter(std::string networkAddress)
 {
-	// for each substring from index to i in network address
+
+	// Stores the list of router addresses which include a subprefix of networkAddress
 	std::vector<std::string> list = {};
-	for(size_t i = 1; i < networkAddress.length(); i++)
+	// Indicates a byte offset into networkAddress which produces a list of
+	// addresses which include the largest subprefix of networkAddress
+	size_t offset = 0;
+
+
+	// For each bit in networkAddress
+	for(size_t i = 0; i < networkAddress.size(); i++)
 	{
-		// where getWords(substring) isn't empty
-		std::vector<std::string> routers = addressList.getWords(networkAddress.substr(0, i));
-		if(routers.empty())
+		// Track the offset
+		offset = i+1;
+
+		if(addressList.search(networkAddress.substr(0, i+1)) == true)
 		{
+			// Until the end of key in the Trie is reached
 			break;
 		}
-
-		list = routers;
 	}
 
-	// find the pair with the longest address
-	size_t max = 0;
+	// Get the list of addresses
+	list = addressList.getWords(networkAddress.substr(0, offset));
+
+	// Find the index to the largest element in the list
+	size_t maxElementSize = 0;
 	for(size_t i = 0; i < list.size(); i++)
 	{
-		if(list.at(i).size() > max)
+		if(list.at(i).size() > maxElementSize)
 		{
-			max = i;
+			maxElementSize = i;
 		}
 	}
 
-	auto i = routerMap.find(list.at(max));
-
-	// if the key doesn't exist return -1
-	if(i == routerMap.end())
-	{
-		return -1;
-	}
-
-	// otherwise return the router number with the corresponding address
-	return i->second;
+	// return the router number which has the largest address within networkAddress
+	return routerMap.at(list.at(maxElementSize));
 }
 
 void PrefixMatcher::insert(std::string address, int routerNumber)
