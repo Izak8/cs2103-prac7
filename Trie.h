@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 class Trie
 {
@@ -15,7 +16,7 @@ class Trie
 	Node* root;
 
 	Node* remove(Node* node, std::string const& key, size_t depth);
-
+	Node* traverse(std::string const& key);
 public:
 	Trie();
 
@@ -23,6 +24,6 @@ public:
 	void insert(std::string const& key);
 	void remove(std::string const& key);
 
-	void printTerminal(std::string const& key);
+	std::vector<std::string> getWords(std::string const& key);
 };
 #endif
